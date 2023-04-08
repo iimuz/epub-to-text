@@ -1,17 +1,16 @@
 [project]
 authors = [{name = "iimuz", email = "iz.primary.story+github@gmail.com"}]
-description = "pdfからtextを抽出するスクリプト"
+description = "epubからtextを抽出するスクリプト"
 license = {file = "LICENSE"}
-name = "pdf-to-text"
+name = "epub-to-text"
 readme = "README.md"
 requires-python = ">=3.10"
-urls = {repository = "https://github.com/iimuz/til/til-20230408"}
+urls = {repository = "https://github.com/iimuz/til/til-20230409"}
 version = "1.0.0"
 
 dependencies = [
-  "pymupdf",
+  "ebooklib",
   "pydantic",
-  "tqdm",
 ]
 
 [tools.setuptools.package-dir]
