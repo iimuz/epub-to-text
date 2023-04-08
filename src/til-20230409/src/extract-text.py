@@ -1,15 +1,15 @@
-"""PDFからテキストを抽出するスクリプト."""
+"""epubからテキストを抽出するスクリプト."""
 import logging
-import os
 import sys
 from argparse import ArgumentParser
 from logging import Formatter, StreamHandler
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-import fitz
+import ebooklib
+from ebooklib import epub
+from markdownify import markdownify as md
 from pydantic import BaseModel
-from tqdm import tqdm
 
 _logger = logging.getLogger(__name__)
 
@@ -45,17 +45,22 @@ def _main() -> None:
     _setup_logger(filepath=(interim_dir / "log.txt"), loglevel=loglevel)
     _logger.info(config)
 
+    # 入力ファイルが存在することを確認
+    if not config.input.exists():
+        raise ValueError(f"not exists: {config.input}")
+
     # 出力先が指定されていない場合は入力ファイルの拡張子変更版を利用する
     output_filepath = config.output
     if output_filepath is None:
-        output_filepath = config.input.with_suffix(".txt")
+        output_filepath = config.input.with_suffix(".md")
 
-    pdf_document = fitz.open(config.input)
-    with open(output_filepath, "wt", encoding="utf-8") as f:
-        for page_index in tqdm(range(len(pdf_document)), desc="extract text"):
-            text = pdf_document[page_index].get_text()
-            f.write(text)
-            f.write(os.linesep)
+    # テキストの抽出しmarkdown形式で保存
+    with output_filepath.open("wt", encoding="utf-8") as f:
+        book = epub.read_epub(str(config.input))
+        for item in book.get_items_of_type(ebooklib.ITEM_DOCUMENT):
+            html_contents = item.get_body_content().decode()
+            md_contents = md(html_contents)
+            f.write(md_contents)
 
 
 def _parse_args() -> _RunConfig:
