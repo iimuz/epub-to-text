@@ -1,12 +1,12 @@
 ---
-title: pdf to text
-date: 2023-04-08
-lastmod: 2023-04-08
+title: epub to text
+date: 2023-04-09
+lastmod: 2023-04-09
 ---
 
 ## 概要
 
-PDF からテキストを抽出するためのスクリプトです。
+epub からテキストを抽出するためのスクリプトです。
 
 ## ファイル構成
 
